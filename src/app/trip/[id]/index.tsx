@@ -5,6 +5,7 @@ import Animated, { FadeInDown, useAnimatedScrollHandler, useAnimatedStyle, useSh
 import { Button } from '@/components/Button';
 import { ChapterSheet, useChapterSheet } from '@/components/ChapterSheet';
 import { FAB } from '@/components/FAB';
+import { MemoryStrip } from '@/components/MemoryStrip';
 import { Icon } from '@/components/Icon';
 import { Screen } from '@/components/Screen';
 import { Text } from '@/components/Text';
@@ -13,6 +14,7 @@ import { TripHeader, TripTopBar } from '@/components/TripHeader';
 import { tripLength } from '@/lib/dates';
 import { useNow } from '@/lib/useNow';
 import { useChapters, useTripChapters } from '@/store/chapters';
+import { useMemories, useTripMemories } from '@/store/memories';
 import { useTrip } from '@/store/trips';
 import { colors, radius, space } from '@/theme/tokens';
 
@@ -26,9 +28,13 @@ export default function TripDetail() {
   const sheet = useChapterSheet();
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
+  const loadMemories = useMemories((s) => s.load);
+  const memoryCount = useTripMemories(tripId).length;
+
   useEffect(() => {
     load(tripId).catch(() => {});
-  }, [tripId, load]);
+    loadMemories(tripId).catch(() => {});
+  }, [tripId, load, loadMemories]);
 
   const scrollY = useSharedValue(0);
   const onScroll = useAnimatedScrollHandler((e) => {
@@ -43,7 +49,7 @@ export default function TripDetail() {
     <Screen safeTop={false}>
       <Animated.ScrollView onScroll={onScroll} scrollEventThrottle={16} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <TripHeader trip={trip} scrollY={scrollY} now={now} />
-        <Stats days={tripLength(trip)} chapters={chapters.length} done={done} />
+        <Stats days={tripLength(trip)} chapters={chapters.length} done={done} photos={memoryCount} />
         {trip.notes ? (
           <Animated.View entering={FadeInDown.delay(260).springify().damping(18)} style={styles.notes}>
             <Icon name="text" size={18} color={colors.textFaint} />
@@ -60,6 +66,7 @@ export default function TripDetail() {
             expandedId={expandedId}
             onToggle={(cid) => setExpandedId((cur) => (cur === cid ? null : cid))}
             onEdit={sheet.openEdit}
+            renderExtra={(c) => <MemoryStrip chapter={c} />}
           />
         ) : (
           <Animated.View entering={FadeInDown.delay(300).springify()} style={styles.empty}>
@@ -76,7 +83,10 @@ export default function TripDetail() {
       <TripTopBar
         title={trip.title}
         scrollY={scrollY}
-        actions={[{ icon: 'pencil-outline', label: 'Edit trip', onPress: () => router.push(`/trip/${trip.id}/edit`) }]}
+        actions={[
+          { icon: 'image-multiple-outline', label: 'All memories', onPress: () => router.push(`/trip/${trip.id}/memories`) },
+          { icon: 'pencil-outline', label: 'Edit trip', onPress: () => router.push(`/trip/${trip.id}/edit`) },
+        ]}
       />
       {chapters.length > 0 && <FAB icon="plus" label="Chapter" onPress={sheet.openNew} />}
       <ChapterSheet visible={sheet.visible} chapter={sheet.chapter} onClose={sheet.close} trip={trip} chapters={chapters} />
@@ -84,7 +94,7 @@ export default function TripDetail() {
   );
 }
 
-function Stats({ days, chapters, done }: { days: number; chapters: number; done: number }) {
+function Stats({ days, chapters, done, photos }: { days: number; chapters: number; done: number; photos: number }) {
   const pct = chapters ? done / chapters : 0;
   const w = useSharedValue(0);
   useEffect(() => {
@@ -96,6 +106,7 @@ function Stats({ days, chapters, done }: { days: number; chapters: number; done:
       <View style={styles.statRow}>
         <Stat value={days} label={days === 1 ? 'day' : 'days'} />
         <Stat value={chapters} label={chapters === 1 ? 'chapter' : 'chapters'} />
+        <Stat value={photos} label={photos === 1 ? 'photo' : 'photos'} />
         <Stat value={`${Math.round(pct * 100)}%`} label="done" accent />
       </View>
       <View style={styles.track}>

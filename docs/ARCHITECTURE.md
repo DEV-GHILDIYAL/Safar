@@ -21,6 +21,8 @@ All times are epoch ms INTEGER.
 | `/trip/new` | Trip form (create) |
 | `/trip/[id]` | Trip detail (timeline) |
 | `/trip/[id]/edit` | Trip form (edit/delete) |
+| `/trip/[id]/memories` | Per-trip memories grid (3 cols) |
+| `/viewer?tripId&chapterId?&index` | Full-screen swipeable photo viewer + caption (chapter or whole trip) |
 
 ## Photo storage
 - Files live in `Paths.document/photos/<base36-time>-<rand>.<ext>` (expo-file-system `File`/`Directory`).
@@ -49,6 +51,7 @@ All times are epoch ms INTEGER.
 - `ChapterSheet` / `useChapterSheet` — add/edit chapter form in a bottom sheet.
 - `ChapterCard` — timeline row: type node + card that expands in place (done, reorder, edit, delete).
 - `Timeline` — day groups, animated drawing rail, live "now" marker.
+- `MemoryStrip` — chapter photo strip with Capture (camera) / Upload (gallery, multi) tiles.
 - `TripHeader` / `TripTopBar` — collapsing parallax cover header (grows from tapped card) + floating top bar.
 
 ## Stores (`src/store/`)

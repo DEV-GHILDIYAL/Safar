@@ -1,5 +1,8 @@
 # Changelog
 
+## Phase 4
+- Memories: capture/upload per chapter, full-screen swipe viewer with captions + delete, per-trip grid.
+
 ## Phase 3
 - GitHub Actions: on `v*` tag, prebuild + `assembleRelease`, attach `safar-<tag>.apk` to a GitHub Release.
 

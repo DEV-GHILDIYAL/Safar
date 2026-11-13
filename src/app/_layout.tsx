@@ -42,6 +42,8 @@ export default function RootLayout() {
         <Stack.Screen name="trip/new" options={{ animation: 'slide_from_bottom' }} />
         <Stack.Screen name="trip/[id]/index" options={{ animation: 'fade', animationDuration: 220 }} />
         <Stack.Screen name="trip/[id]/edit" options={{ animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="trip/[id]/memories" options={{ animation: 'slide_from_right' }} />
+        <Stack.Screen name="viewer" options={{ animation: 'fade', contentStyle: { backgroundColor: '#000' } }} />
       </Stack>
     </GestureHandlerRootView>
   );

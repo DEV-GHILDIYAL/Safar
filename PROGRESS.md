@@ -5,11 +5,11 @@
 - [x] 1. SQLite schema + data layer, trip CRUD, Home screen
 - [x] 2. Trip detail timeline + chapter CRUD
 - [x] 3. GitHub Actions release workflow
-- [ ] 4. Memories: capture, upload, viewer, per-trip grid
+- [x] 4. Memories: capture, upload, viewer, per-trip grid
 - [ ] 5. Animation/polish pass, empty states, icon + splash
 
 ## Current / next
-Next: phase 4.
+Next: phase 5.
 
 ## Decisions
 - Expo SDK 58 (latest at scaffold), RN 0.88, Reanimated 4.7 + worklets (babel plugin auto via babel-preset-expo).
@@ -30,6 +30,8 @@ Next: phase 4.
 - CI: ubuntu, Node 22, JDK 17, `prebuild --clean`, ABIs arm64-v8a/armeabi-v7a/x86_64 (x86 dropped for
   size/time). Signing = prebuild template `debug.keystore` via `signingConfigs.debug` (stable signature).
   APK named `safar-<tag>.apk`; release notes auto-generated.
+- Memory `taken_at` = EXIF DateTimeOriginal for gallery picks, else now. Viewer uses a paging FlatList
+  (no pinch-zoom yet); caption saves on blur/submit.
 
 ## Known issues
 - None yet (nothing has been run; owner tests).
