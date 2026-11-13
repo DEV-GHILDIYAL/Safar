@@ -90,6 +90,15 @@ export function countdown(target: number, now = Date.now()): string {
   return `${days}d ${hours % 24}h`;
 }
 
+/** Duration like "45m", "2h 30m", "1d 3h". */
+export function formatDuration(ms: number): string {
+  const mins = Math.round(ms / MINUTE);
+  if (mins < 60) return `${mins}m`;
+  const h = Math.floor(mins / 60);
+  if (h < 24) return mins % 60 ? `${h}h ${mins % 60}m` : `${h}h`;
+  return h % 24 ? `${Math.floor(h / 24)}d ${h % 24}h` : `${Math.floor(h / 24)}d`;
+}
+
 /** Keeps the calendar day of `dateMs` and the clock time of `timeMs`. */
 export function withTime(dateMs: number, timeMs: number): number {
   const d = new Date(dateMs);

@@ -3,13 +3,13 @@
 ## Phases
 - [x] 0. Scaffold, theme tokens, navigation, base components, docs
 - [x] 1. SQLite schema + data layer, trip CRUD, Home screen
-- [ ] 2. Trip detail timeline + chapter CRUD
+- [x] 2. Trip detail timeline + chapter CRUD
 - [ ] 3. GitHub Actions release workflow
 - [ ] 4. Memories: capture, upload, viewer, per-trip grid
 - [ ] 5. Animation/polish pass, empty states, icon + splash
 
 ## Current / next
-Next: phase 2.
+Next: phase 3.
 
 ## Decisions
 - Expo SDK 58 (latest at scaffold), RN 0.88, Reanimated 4.7 + worklets (babel plugin auto via babel-preset-expo).
@@ -22,6 +22,11 @@ Next: phase 2.
 - Chapter `sort_order` defaults to `start_at`; reorder swaps within a day only.
 - Picked cover stays a source URI until Save, so cancelled forms leave no orphan files.
 - `.gitattributes` forces LF (CI runs on Linux).
+- Shared-element transition is hand-rolled: card rect → detail header animates left/top/width/height
+  (no Reanimated sharedTransitionTag; it is experimental). Detail route uses a short native fade.
+- Reorder = up/down buttons in the expanded card (within a day); long-press a card to edit.
+- Chapter title is optional; defaults to "<Type> to <To>" or the type label.
+- "Now" marker shown only while the trip is current.
 
 ## Known issues
 - None yet (nothing has been run; owner tests).

@@ -44,6 +44,12 @@ All times are epoch ms INTEGER.
 - `TripCard` — trip list card (+ `useOpenTrip` for shared-element style navigation).
 - `HeroTripCard` — large home card with next chapter + countdown.
 - `TripForm` — create/edit trip with cover picker, dates, notes.
+- `BottomSheet` — custom modal sheet (spring in, PanResponder drag-to-dismiss on handle).
+- `TypePicker` — horizontal chapter-type chips.
+- `ChapterSheet` / `useChapterSheet` — add/edit chapter form in a bottom sheet.
+- `ChapterCard` — timeline row: type node + card that expands in place (done, reorder, edit, delete).
+- `Timeline` — day groups, animated drawing rail, live "now" marker.
+- `TripHeader` / `TripTopBar` — collapsing parallax cover header (grows from tapped card) + floating top bar.
 
 ## Stores (`src/store/`)
 `useTrips`, `useChapters` (byTrip), `useMemories` (byTrip). Helpers: `lib/timeline.ts` (groupByDay, findNext),

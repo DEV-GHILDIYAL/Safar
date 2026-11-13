@@ -13,18 +13,20 @@ interface Props {
   haptic?: HapticKind;
   style?: StyleProp<ViewStyle>;
   accessibilityLabel?: string;
+  disabled?: boolean;
 }
 
-export function IconButton({ icon, onPress, size = 44, color = colors.text, background = colors.surfaceAlt, haptic = 'tap', style, accessibilityLabel }: Props) {
+export function IconButton({ icon, onPress, size = 44, color = colors.text, background = colors.surfaceAlt, haptic = 'tap', style, accessibilityLabel, disabled }: Props) {
   return (
     <PressableScale
-      haptic={haptic}
+      haptic={disabled ? undefined : haptic}
       onPress={onPress}
+      disabled={disabled}
       scaleTo={0.88}
       hitSlop={6}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
-      style={[styles.base, { width: size, height: size, borderRadius: size / 2, backgroundColor: background }, style]}
+      style={[styles.base, { width: size, height: size, borderRadius: size / 2, backgroundColor: background, opacity: disabled ? 0.3 : 1 }, style]}
     >
       <Icon name={icon} size={size * 0.48} color={color} />
     </PressableScale>

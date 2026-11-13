@@ -1,24 +1,139 @@
 import { router, useLocalSearchParams } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import Animated, { FadeInDown, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 import { Button } from '@/components/Button';
+import { ChapterSheet, useChapterSheet } from '@/components/ChapterSheet';
+import { FAB } from '@/components/FAB';
+import { Icon } from '@/components/Icon';
 import { Screen } from '@/components/Screen';
 import { Text } from '@/components/Text';
+import { Timeline } from '@/components/Timeline';
+import { TripHeader, TripTopBar } from '@/components/TripHeader';
+import { tripLength } from '@/lib/dates';
+import { useNow } from '@/lib/useNow';
+import { useChapters, useTripChapters } from '@/store/chapters';
 import { useTrip } from '@/store/trips';
-import { space } from '@/theme/tokens';
+import { colors, radius, space } from '@/theme/tokens';
 
-// Placeholder until the timeline lands in phase 2.
 export default function TripDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const trip = useTrip(Number(id));
+  const tripId = Number(id);
+  const trip = useTrip(tripId);
+  const chapters = useTripChapters(tripId);
+  const load = useChapters((s) => s.load);
+  const now = useNow();
+  const sheet = useChapterSheet();
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+
+  useEffect(() => {
+    load(tripId).catch(() => {});
+  }, [tripId, load]);
+
+  const scrollY = useSharedValue(0);
+  const onScroll = useAnimatedScrollHandler((e) => {
+    scrollY.value = e.contentOffset.y;
+  });
+
   if (!trip) return <Screen />;
+
+  const done = chapters.filter((c) => c.done).length;
+
   return (
-    <Screen>
-      <View style={styles.wrap}>
-        <Text variant="display">{trip.title}</Text>
-        <Button label="Edit" variant="secondary" onPress={() => router.push(`/trip/${trip.id}/edit`)} />
-      </View>
+    <Screen safeTop={false}>
+      <Animated.ScrollView onScroll={onScroll} scrollEventThrottle={16} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <TripHeader trip={trip} scrollY={scrollY} now={now} />
+        <Stats days={tripLength(trip)} chapters={chapters.length} done={done} />
+        {trip.notes ? (
+          <Animated.View entering={FadeInDown.delay(260).springify().damping(18)} style={styles.notes}>
+            <Icon name="text" size={18} color={colors.textFaint} />
+            <Text variant="small" color={colors.textDim} style={styles.flex}>
+              {trip.notes}
+            </Text>
+          </Animated.View>
+        ) : null}
+        {chapters.length ? (
+          <Timeline
+            trip={trip}
+            chapters={chapters}
+            now={now}
+            expandedId={expandedId}
+            onToggle={(cid) => setExpandedId((cur) => (cur === cid ? null : cid))}
+            onEdit={sheet.openEdit}
+          />
+        ) : (
+          <Animated.View entering={FadeInDown.delay(300).springify()} style={styles.empty}>
+            <Text variant="title" align="center">
+              Chapter one awaits
+            </Text>
+            <Text variant="body" color={colors.textDim} align="center">
+              Add the train, the hotel, that street-food stop. Each becomes a step on your timeline.
+            </Text>
+            <Button label="Add first chapter" icon="plus" onPress={sheet.openNew} />
+          </Animated.View>
+        )}
+      </Animated.ScrollView>
+      <TripTopBar
+        title={trip.title}
+        scrollY={scrollY}
+        actions={[{ icon: 'pencil-outline', label: 'Edit trip', onPress: () => router.push(`/trip/${trip.id}/edit`) }]}
+      />
+      {chapters.length > 0 && <FAB icon="plus" label="Chapter" onPress={sheet.openNew} />}
+      <ChapterSheet visible={sheet.visible} chapter={sheet.chapter} onClose={sheet.close} trip={trip} chapters={chapters} />
     </Screen>
   );
 }
 
-const styles = StyleSheet.create({ wrap: { padding: space.xl, gap: space.lg } });
+function Stats({ days, chapters, done }: { days: number; chapters: number; done: number }) {
+  const pct = chapters ? done / chapters : 0;
+  const w = useSharedValue(0);
+  useEffect(() => {
+    w.value = withDelay(400, withTiming(pct, { duration: 700 }));
+  }, [pct, w]);
+  const bar = useAnimatedStyle(() => ({ width: `${w.value * 100}%` }));
+  return (
+    <Animated.View entering={FadeInDown.delay(180).springify().damping(18)} style={styles.stats}>
+      <View style={styles.statRow}>
+        <Stat value={days} label={days === 1 ? 'day' : 'days'} />
+        <Stat value={chapters} label={chapters === 1 ? 'chapter' : 'chapters'} />
+        <Stat value={`${Math.round(pct * 100)}%`} label="done" accent />
+      </View>
+      <View style={styles.track}>
+        <Animated.View style={[styles.fill, bar]} />
+      </View>
+    </Animated.View>
+  );
+}
+
+function Stat({ value, label, accent }: { value: number | string; label: string; accent?: boolean }) {
+  return (
+    <View style={styles.stat}>
+      <Text variant="title" color={accent ? colors.accent : colors.text}>
+        {value}
+      </Text>
+      <Text variant="label" color={colors.textFaint}>
+        {label}
+      </Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  content: { paddingBottom: 160 },
+  flex: { flex: 1 },
+  stats: {
+    margin: space.lg,
+    padding: space.lg,
+    gap: space.md,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+  },
+  statRow: { flexDirection: 'row' },
+  stat: { flex: 1, gap: 2 },
+  track: { height: 6, borderRadius: 3, backgroundColor: colors.surfaceAlt, overflow: 'hidden' },
+  fill: { height: '100%', borderRadius: 3, backgroundColor: colors.accent },
+  notes: { flexDirection: 'row', gap: space.sm, marginHorizontal: space.xl, marginBottom: space.sm },
+  empty: { gap: space.lg, padding: space.xl, paddingTop: space.xxl },
+});
