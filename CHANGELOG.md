@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.1.4
+- Release: responsive chapter toolbar, calmer motion, shorter trip cover.
+
 ## Phase 6.3
 - Fix: expanded chapter actions overflowed the card (edit button off-screen) → equal-width toolbar.
 - Responsive sweep: date fields drop the current year, long labels/refs truncate, cover buttons wrap.
