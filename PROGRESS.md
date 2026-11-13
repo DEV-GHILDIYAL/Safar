@@ -4,12 +4,12 @@
 - [x] 0. Scaffold, theme tokens, navigation, base components, docs
 - [x] 1. SQLite schema + data layer, trip CRUD, Home screen
 - [x] 2. Trip detail timeline + chapter CRUD
-- [ ] 3. GitHub Actions release workflow
+- [x] 3. GitHub Actions release workflow
 - [ ] 4. Memories: capture, upload, viewer, per-trip grid
 - [ ] 5. Animation/polish pass, empty states, icon + splash
 
 ## Current / next
-Next: phase 3.
+Next: phase 4.
 
 ## Decisions
 - Expo SDK 58 (latest at scaffold), RN 0.88, Reanimated 4.7 + worklets (babel plugin auto via babel-preset-expo).
@@ -27,6 +27,9 @@ Next: phase 3.
 - Reorder = up/down buttons in the expanded card (within a day); long-press a card to edit.
 - Chapter title is optional; defaults to "<Type> to <To>" or the type label.
 - "Now" marker shown only while the trip is current.
+- CI: ubuntu, Node 22, JDK 17, `prebuild --clean`, ABIs arm64-v8a/armeabi-v7a/x86_64 (x86 dropped for
+  size/time). Signing = prebuild template `debug.keystore` via `signingConfigs.debug` (stable signature).
+  APK named `safar-<tag>.apk`; release notes auto-generated.
 
 ## Known issues
 - None yet (nothing has been run; owner tests).
