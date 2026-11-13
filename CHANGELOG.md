@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.1.3
+- Release: bottom tabs (Home/Trips/Memories/Profile), offline profile, compact home cards, tab-switch crash fix.
+
 ## Phase 6.2
 - Fix: app closing on tab switch (tab bar now uses expo-router 58's `navigateToTab`). Ref typing fixes.
 

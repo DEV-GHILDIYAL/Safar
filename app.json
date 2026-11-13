@@ -3,7 +3,7 @@
     "name": "Safar",
     "slug": "safar",
     "scheme": "safar",
-    "version": "1.0.0",
+    "version": "0.1.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -11,7 +11,7 @@
     "platforms": ["android"],
     "android": {
       "package": "com.devghildiyal.safar",
-      "versionCode": 1,
+      "versionCode": 4,
       "adaptiveIcon": {
         "backgroundColor": "#0A0C10",
         "foregroundImage": "./assets/android-icon-foreground.png",
