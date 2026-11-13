@@ -11,15 +11,15 @@ export default function TabsLayout() {
       // No navigator `animation`: the native-driver scene fade conflicted with Reanimated entering
       // animations on freshly mounted tabs (app closed on tab switch). Screens animate their own content.
       screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: colors.bg } }}
-      tabBar={({ state, navigation }) => (
+      // expo-router 58's tabBar gets `navigateToTab(routeKey)`, NOT `navigation` (calling
+      // navigation.navigate threw in the press handler and closed the app).
+      tabBar={({ state, navigateToTab }) => (
         <TabBar
           index={state.index}
           routes={state.routes.map((r) => r.name)}
           onPress={(name) => {
             const route = state.routes.find((r) => r.name === name);
-            if (!route) return;
-            const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-            if (!event.defaultPrevented) navigation.navigate(route.name, route.params);
+            if (route) navigateToTab(route.key);
           }}
         />
       )}

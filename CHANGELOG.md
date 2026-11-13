@@ -1,5 +1,8 @@
 # Changelog
 
+## Phase 6.2
+- Fix: app closing on tab switch (tab bar now uses expo-router 58's `navigateToTab`). Ref typing fixes.
+
 ## Phase 6.1
 - Fix: app closing when switching tabs (removed tab scene fade). Error screens with retry instead of crashes.
 

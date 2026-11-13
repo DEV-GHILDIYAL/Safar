@@ -44,7 +44,9 @@ screens read state via selectors and never import `src/db` directly. File IO for
 `src/lib/photos.ts`, called by stores (delete files when rows are deleted).
 
 ## Token-saving rules
-- Write code only. Do NOT run tests, emulator, builds, lint or type checks; the owner tests.
+- Never run the emulator or native/Gradle builds (low-end laptop); the owner tests on a phone.
+- DO run `npx tsc --noEmit` before every commit (it caught a crash code review missed).
+  For bigger changes also `npx expo export --platform android` to verify bundling.
 - No test files. Never read `node_modules` or lock files.
 - Replies after a phase: max 3 lines. No long summaries.
 - Docs: short and factual; update only changed sections, never rewrite whole files.

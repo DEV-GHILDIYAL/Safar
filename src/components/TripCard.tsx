@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useRef } from 'react';
+import { useRef, type ComponentRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { daysBetween, formatRange, tripLength, tripStatus } from '@/lib/dates';
@@ -14,7 +14,7 @@ import { Text } from './Text';
 
 /** Navigates to trip detail, recording the card rect for the shared-element style transition. */
 export function useOpenTrip(trip: Trip) {
-  const ref = useRef<View>(null);
+  const ref = useRef<ComponentRef<typeof View>>(null);
   const open = () => {
     const go = () => router.push(`/trip/${trip.id}`);
     if (!ref.current) return go();
