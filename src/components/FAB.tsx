@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import Animated, { ZoomIn } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, LinearTransition, ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, radius, space } from '@/theme/tokens';
 import { Icon, type IconName } from './Icon';
@@ -10,18 +10,27 @@ interface Props {
   onPress: () => void;
   icon?: IconName;
   label?: string;
+  /** Hide the label (e.g. while scrolling down); animates width. */
+  collapsed?: boolean;
 }
 
-export function FAB({ onPress, icon = 'plus', label }: Props) {
+export function FAB({ onPress, icon = 'plus', label, collapsed }: Props) {
   const insets = useSafeAreaInsets();
+  const showLabel = !!label && !collapsed;
   return (
-    <Animated.View entering={ZoomIn.delay(250).springify()} style={[styles.wrap, { bottom: insets.bottom + space.xl }]}>
-      <PressableScale haptic="press" scaleTo={0.9} onPress={onPress} style={[styles.fab, label ? styles.extended : null]}>
+    <Animated.View
+      entering={ZoomIn.delay(250).springify()}
+      layout={LinearTransition.springify().damping(18)}
+      style={[styles.wrap, { bottom: insets.bottom + space.xl }]}
+    >
+      <PressableScale haptic="press" scaleTo={0.9} onPress={onPress} style={[styles.fab, showLabel ? styles.extended : null]} accessibilityLabel={label}>
         <Icon name={icon} size={26} color={colors.onAccent} />
-        {label ? (
-          <Text variant="body" color={colors.onAccent} style={styles.label}>
-            {label}
-          </Text>
+        {showLabel ? (
+          <Animated.View entering={FadeIn.duration(180)} exiting={FadeOut.duration(100)}>
+            <Text variant="body" color={colors.onAccent} style={styles.label} numberOfLines={1}>
+              {label}
+            </Text>
+          </Animated.View>
         ) : null}
       </PressableScale>
     </Animated.View>

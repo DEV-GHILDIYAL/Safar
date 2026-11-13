@@ -35,7 +35,8 @@ All times are epoch ms INTEGER.
 - `PressableScale` — Pressable with spring scale + optional haptic.
 - `Button` — primary/secondary/ghost/danger, icon, loading, compact.
 - `IconButton` — round icon button.
-- `FAB` — floating accent action button (optionally extended with label).
+- `FAB` — floating accent action button; label collapses (animated) via `collapsed`.
+- `EmptyState` — floating icon in soft rings, title, body, optional CTA.
 - `Card` — rounded surface container.
 - `Screen` — full-screen dark container with optional safe top inset.
 - `TextField` — labelled input with focus accent, optional icon, multiline.

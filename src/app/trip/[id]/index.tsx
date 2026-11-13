@@ -2,8 +2,8 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
-import { Button } from '@/components/Button';
 import { ChapterSheet, useChapterSheet } from '@/components/ChapterSheet';
+import { EmptyState } from '@/components/EmptyState';
 import { FAB } from '@/components/FAB';
 import { MemoryStrip } from '@/components/MemoryStrip';
 import { Icon } from '@/components/Icon';
@@ -69,15 +69,13 @@ export default function TripDetail() {
             renderExtra={(c) => <MemoryStrip chapter={c} />}
           />
         ) : (
-          <Animated.View entering={FadeInDown.delay(300).springify()} style={styles.empty}>
-            <Text variant="title" align="center">
-              Chapter one awaits
-            </Text>
-            <Text variant="body" color={colors.textDim} align="center">
-              Add the train, the hotel, that street-food stop. Each becomes a step on your timeline.
-            </Text>
-            <Button label="Add first chapter" icon="plus" onPress={sheet.openNew} />
-          </Animated.View>
+          <EmptyState
+            icon="book-open-page-variant-outline"
+            title="Chapter one awaits"
+            body="Add the train, the hotel, that street-food stop. Each becomes a step on your timeline."
+            action={{ label: 'Add first chapter', icon: 'plus', onPress: sheet.openNew }}
+            delay={300}
+          />
         )}
       </Animated.ScrollView>
       <TripTopBar
@@ -146,5 +144,4 @@ const styles = StyleSheet.create({
   track: { height: 6, borderRadius: 3, backgroundColor: colors.surfaceAlt, overflow: 'hidden' },
   fill: { height: '100%', borderRadius: 3, backgroundColor: colors.accent },
   notes: { flexDirection: 'row', gap: space.sm, marginHorizontal: space.xl, marginBottom: space.sm },
-  empty: { gap: space.lg, padding: space.xl, paddingTop: space.xxl },
 });

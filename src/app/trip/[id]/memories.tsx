@@ -2,8 +2,8 @@ import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo } from 'react';
 import { FlatList, StyleSheet, useWindowDimensions, View } from 'react-native';
-import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
-import { Icon } from '@/components/Icon';
+import Animated, { FadeIn } from 'react-native-reanimated';
+import { EmptyState } from '@/components/EmptyState';
 import { IconButton } from '@/components/IconButton';
 import { PressableScale } from '@/components/PressableScale';
 import { Screen } from '@/components/Screen';
@@ -53,17 +53,11 @@ export default function TripMemories() {
         columnWrapperStyle={styles.gapRow}
         contentContainerStyle={styles.grid}
         ListEmptyComponent={
-          <Animated.View entering={FadeInDown.delay(150).springify()} style={styles.empty}>
-            <View style={styles.emptyIcon}>
-              <Icon name="image-multiple-outline" size={40} color={colors.accent} />
-            </View>
-            <Text variant="heading" align="center">
-              No memories yet
-            </Text>
-            <Text variant="body" color={colors.textDim} align="center">
-              Open a chapter on the timeline and tap Capture or Upload.
-            </Text>
-          </Animated.View>
+          <EmptyState
+            icon="image-multiple-outline"
+            title="No memories yet"
+            body="Open a chapter on the timeline and tap Capture or Upload. Every photo lands here too."
+          />
         }
         renderItem={({ item, index }) => {
           const type = typeOf.get(item.chapterId);
@@ -91,6 +85,4 @@ const styles = StyleSheet.create({
   grid: { paddingHorizontal: space.lg, paddingBottom: space.xxxl, gap: GAP },
   gapRow: { gap: GAP },
   dot: { position: 'absolute', top: 8, right: 8, width: 10, height: 10, borderRadius: 5, borderWidth: 2, borderColor: colors.bg },
-  empty: { alignItems: 'center', gap: space.md, paddingTop: space.xxxl * 1.5, paddingHorizontal: space.xl },
-  emptyIcon: { width: 88, height: 88, borderRadius: 44, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.accentSoft },
 });

@@ -20,6 +20,7 @@ src/lib/          pure helpers: dates, photos (file IO), haptics, transition
 src/theme/        tokens.ts (colors/space/radius/type/spring), chapterTypes.ts
 src/types.ts      domain types (camelCase)
 docs/             ARCHITECTURE.md
+scripts/          gen-icons.mjs (regenerates assets/*.png icon + splash; node, no deps)
 ```
 
 ## Conventions

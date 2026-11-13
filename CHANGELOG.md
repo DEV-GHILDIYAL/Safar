@@ -1,5 +1,8 @@
 # Changelog
 
+## Phase 5
+- Animated empty states, collapsing FAB on Home, generated app icon (adaptive + monochrome) and splash.
+
 ## Phase 4
 - Memories: capture/upload per chapter, full-screen swipe viewer with captions + delete, per-trip grid.
 

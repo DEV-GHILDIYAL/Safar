@@ -1,7 +1,8 @@
 import { router } from 'expo-router';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { EmptyState } from '@/components/EmptyState';
 import { FAB } from '@/components/FAB';
 import { HeroTripCard } from '@/components/HeroTripCard';
 import { Screen } from '@/components/Screen';
@@ -24,6 +25,7 @@ function greeting(now: number) {
 export default function Home() {
   const trips = useTrips((s) => s.trips);
   const now = useNow();
+  const [collapsed, setCollapsed] = useState(false);
 
   const { hero, upcoming, past } = useMemo(() => {
     const current: Trip[] = [];
@@ -39,7 +41,15 @@ export default function Home() {
 
   return (
     <Screen>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={32}
+        onScroll={(e) => {
+          const c = e.nativeEvent.contentOffset.y > 60;
+          if (c !== collapsed) setCollapsed(c);
+        }}
+      >
         <Animated.View entering={FadeInDown.springify().damping(18)} style={styles.header}>
           <Text variant="label" color={colors.accent}>
             {formatDate(now)}
@@ -68,17 +78,15 @@ export default function Home() {
         )}
 
         {trips.length === 0 && (
-          <Animated.View entering={FadeInDown.delay(150).springify()} style={styles.empty}>
-            <Text variant="title" align="center">
-              Your first story starts here
-            </Text>
-            <Text variant="body" color={colors.textDim} align="center">
-              Create a trip, then add chapters: trains, stays, food, everything.
-            </Text>
-          </Animated.View>
+          <EmptyState
+            icon="map-marker-path"
+            title="Your first story starts here"
+            body="Create a trip, then add its chapters: the train out, the homestay, that chai stop. Safar keeps it all offline."
+            action={{ label: 'Plan a trip', icon: 'plus', onPress: () => router.push('/trip/new') }}
+          />
         )}
       </ScrollView>
-      <FAB label="New trip" onPress={() => router.push('/trip/new')} />
+      {trips.length > 0 && <FAB label="New trip" collapsed={collapsed} onPress={() => router.push('/trip/new')} />}
     </Screen>
   );
 }
@@ -99,5 +107,4 @@ const styles = StyleSheet.create({
   header: { gap: space.xs, paddingTop: space.md },
   section: { gap: space.lg },
   sectionTitle: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm },
-  empty: { gap: space.md, paddingTop: space.xxxl, paddingHorizontal: space.lg },
 });
