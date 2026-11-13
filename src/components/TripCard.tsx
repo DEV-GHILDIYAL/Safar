@@ -8,7 +8,7 @@ import { colors, radius, space, stagger } from '@/theme/tokens';
 import type { Trip } from '@/types';
 import { CoverImage } from './CoverImage';
 import { Icon } from './Icon';
-import { Pill } from './Pill';
+import { LiveDot } from './Pill';
 import { PressableScale } from './PressableScale';
 import { Text } from './Text';
 
@@ -26,14 +26,15 @@ export function useOpenTrip(trip: Trip) {
   return { ref, open };
 }
 
-function statusLabel(trip: Trip, now: number): string {
+export function statusText(trip: Trip, now: number): { text: string; color: string; live: boolean } {
   const s = tripStatus(trip, now);
+  if (s === 'current') return { text: 'On the road', color: colors.accent, live: true };
   if (s === 'upcoming') {
     const d = daysBetween(now, trip.startDate);
-    return d === 1 ? 'Tomorrow' : `In ${d} days`;
+    return { text: d === 1 ? 'Tomorrow' : `In ${d} days`, color: colors.text, live: false };
   }
-  if (s === 'current') return 'On the road';
-  return `${tripLength(trip)} day${tripLength(trip) > 1 ? 's' : ''}`;
+  const len = tripLength(trip);
+  return { text: `${len} day${len > 1 ? 's' : ''}`, color: colors.textFaint, live: false };
 }
 
 interface Props {
@@ -42,37 +43,40 @@ interface Props {
   now: number;
 }
 
+/** Compact, scannable trip row: cover thumb, title, place + dates, status. */
 export function TripCard({ trip, index, now }: Props) {
   const { ref, open } = useOpenTrip(trip);
+  const status = statusText(trip, now);
   const past = tripStatus(trip, now) === 'past';
   return (
-    <Animated.View entering={FadeInDown.delay(stagger(index) + 120).springify().damping(18)}>
+    <Animated.View entering={FadeInDown.delay(stagger(index, 45) + 100).springify().damping(18)}>
       <PressableScale haptic="tap" onPress={open} scaleTo={0.97}>
-        <View ref={ref} collapsable={false} style={[styles.card, past && styles.past]}>
-          <CoverImage file={trip.cover} seed={trip.id} scrim={past ? 1.2 : 1} style={StyleSheet.absoluteFill} />
-          <View style={styles.top}>
-            <Pill label={statusLabel(trip, now)} live={tripStatus(trip, now) === 'current'} color={past ? colors.textDim : colors.text} />
-          </View>
-          <View style={styles.bottom}>
-            <Text variant="title" numberOfLines={1} color={past ? colors.textDim : colors.text}>
+        <View ref={ref} collapsable={false} style={styles.card}>
+          <CoverImage file={trip.cover} seed={trip.id} style={[styles.thumb, past && styles.dim]} />
+          <View style={styles.body}>
+            <Text variant="heading" numberOfLines={1} color={past ? colors.textDim : colors.text}>
               {trip.title}
             </Text>
-            <View style={styles.meta}>
-              {trip.destination ? (
-                <>
-                  <Icon name="map-marker" size={14} color={colors.accent} />
-                  <Text variant="small" color={colors.textDim} numberOfLines={1} style={styles.flexShrink}>
-                    {trip.destination}
-                  </Text>
-                  <Text variant="small" color={colors.textFaint}>
-                    ·
-                  </Text>
-                </>
-              ) : null}
-              <Text variant="small" color={colors.textDim}>
-                {formatRange(trip.startDate, trip.endDate)}
+            {trip.destination ? (
+              <View style={styles.meta}>
+                <Icon name="map-marker" size={13} color={colors.accent} />
+                <Text variant="small" color={colors.textDim} numberOfLines={1} style={styles.shrink}>
+                  {trip.destination}
+                </Text>
+              </View>
+            ) : null}
+            <Text variant="small" color={colors.textFaint} numberOfLines={1}>
+              {formatRange(trip.startDate, trip.endDate)}
+            </Text>
+          </View>
+          <View style={styles.side}>
+            <View style={styles.status}>
+              {status.live && <LiveDot size={7} />}
+              <Text variant="label" color={status.color} style={styles.statusText}>
+                {status.text}
               </Text>
             </View>
+            <Icon name="chevron-right" size={22} color={colors.textFaint} />
           </View>
         </View>
       </PressableScale>
@@ -82,15 +86,21 @@ export function TripCard({ trip, index, now }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    height: 200,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    padding: space.sm + 2,
     borderRadius: radius.lg,
-    overflow: 'hidden',
-    justifyContent: 'space-between',
     backgroundColor: colors.surface,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
-  past: { height: 150 },
-  top: { padding: space.lg, flexDirection: 'row' },
-  bottom: { padding: space.lg, gap: space.xs },
-  meta: { flexDirection: 'row', alignItems: 'center', gap: space.xs + 2 },
-  flexShrink: { flexShrink: 1 },
+  thumb: { width: 72, height: 72, borderRadius: radius.md },
+  dim: { opacity: 0.6 },
+  body: { flex: 1, gap: 2 },
+  meta: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
+  shrink: { flexShrink: 1 },
+  side: { alignItems: 'flex-end', justifyContent: 'space-between', alignSelf: 'stretch', paddingVertical: space.xs },
+  status: { flexDirection: 'row', alignItems: 'center', gap: space.xs + 1 },
+  statusText: { fontSize: 10 },
 });

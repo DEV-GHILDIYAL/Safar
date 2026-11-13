@@ -12,16 +12,18 @@ interface Props {
   label?: string;
   /** Hide the label (e.g. while scrolling down); animates width. */
   collapsed?: boolean;
+  /** Extra bottom offset, e.g. tab bar space on tab screens (replaces the safe-area inset). */
+  bottomOffset?: number;
 }
 
-export function FAB({ onPress, icon = 'plus', label, collapsed }: Props) {
+export function FAB({ onPress, icon = 'plus', label, collapsed, bottomOffset }: Props) {
   const insets = useSafeAreaInsets();
   const showLabel = !!label && !collapsed;
   return (
     <Animated.View
       entering={ZoomIn.delay(250).springify()}
       layout={LinearTransition.springify().damping(18)}
-      style={[styles.wrap, { bottom: insets.bottom + space.xl }]}
+      style={[styles.wrap, { bottom: (bottomOffset ?? insets.bottom) + space.lg }]}
     >
       <PressableScale haptic="press" scaleTo={0.9} onPress={onPress} style={[styles.fab, showLabel ? styles.extended : null]} accessibilityLabel={label}>
         <Icon name={icon} size={26} color={colors.onAccent} />

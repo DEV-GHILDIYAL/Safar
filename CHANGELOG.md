@@ -1,5 +1,9 @@
 # Changelog
 
+## Phase 6
+- Bottom navigation with 4 tabs: Home, Trips (search + filters), Memories (all photos), Profile (offline).
+- Compact home hero and trip row cards for faster scanning.
+
 ## Phase 5
 - Animated empty states, collapsing FAB on Home, generated app icon (adaptive + monochrome) and splash.
 

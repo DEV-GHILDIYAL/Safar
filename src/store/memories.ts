@@ -8,6 +8,8 @@ const EMPTY: Memory[] = [];
 interface MemoriesState {
   byTrip: Record<number, Memory[]>;
   load: (tripId: number) => Promise<void>;
+  /** Loads every trip's memories (Memories tab). */
+  loadAll: () => Promise<void>;
   add: (tripId: number, chapterId: number, photos: PickedPhoto[]) => Promise<Memory[]>;
   setCaption: (memory: Memory, caption: string) => Promise<void>;
   remove: (memory: Memory) => Promise<void>;
@@ -27,6 +29,13 @@ export const useMemories = create<MemoriesState>((set, get) => {
     load: async (tripId) => {
       const list = await repo.listMemoriesByTrip(tripId);
       set({ byTrip: { ...get().byTrip, [tripId]: list } });
+    },
+
+    loadAll: async () => {
+      const all = await repo.listAllMemories();
+      const byTrip: Record<number, Memory[]> = {};
+      for (const m of all) (byTrip[m.tripId] ??= []).push(m);
+      set({ byTrip });
     },
 
     add: async (tripId, chapterId, photos) => {

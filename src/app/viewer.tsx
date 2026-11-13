@@ -10,7 +10,7 @@ import { TypeIcon } from '@/components/TypeIcon';
 import { formatDate, formatTime } from '@/lib/dates';
 import { haptics } from '@/lib/haptics';
 import { photoUri } from '@/lib/photos';
-import { useTripChapters } from '@/store/chapters';
+import { useChapters, useTripChapters } from '@/store/chapters';
 import { useMemories, useTripMemories } from '@/store/memories';
 import { colors, radius, space } from '@/theme/tokens';
 import type { Memory } from '@/types';
@@ -29,6 +29,13 @@ export default function Viewer() {
   const [current, setCurrent] = useState(initial);
   const [chrome, setChrome] = useState(true);
   const remove = useMemories((s) => s.remove);
+  const loadChapters = useChapters((s) => s.load);
+
+  // Opened from the Memories tab the chapters may not be loaded yet (needed for the caption meta).
+  useEffect(() => {
+    if (!chapters.length) loadChapters(tripId).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tripId]);
 
   useEffect(() => {
     if (!items.length) router.back();

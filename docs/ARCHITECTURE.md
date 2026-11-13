@@ -9,6 +9,7 @@ All times are epoch ms INTEGER.
 | `trips` | id PK, title, destination, start_date, end_date (local midnights), cover (filename, nullable), notes, created_at |
 | `chapters` | id PK, trip_id → trips (CASCADE), type, title, start_at, end_at (nullable), from_place, to_place, booking_ref, notes, done (0/1), sort_order REAL, created_at |
 | `memories` | id PK, chapter_id → chapters (CASCADE), trip_id → trips (CASCADE), file, caption, taken_at, created_at |
+| `profile` (migration 2) | id PK (always 1), name, home_city, avatar (filename, nullable) |
 
 - trip 1—n chapters 1—n memories (`memories.trip_id` denormalised for the per-trip grid).
 - `sort_order` starts as `start_at`; manual reorder swaps values within a day; editing the time resets it.
@@ -17,7 +18,11 @@ All times are epoch ms INTEGER.
 ## Navigation map (expo-router, `src/app/`)
 | Route | Screen |
 |---|---|
-| `/` | Home: hero (current, else next upcoming), Upcoming, Past, FAB |
+| `(tabs)/` | Bottom tabs (custom floating `TabBar`) inside the root Stack |
+| `/` — `(tabs)/index` | Home: compact hero (current, else next upcoming), Up next (3), Recent (2), FAB |
+| `/trips` | All trips: search (title/place/notes) + All/Now/Upcoming/Past filter |
+| `/memories` | Photos of every trip, 6-photo preview per trip → per-trip grid |
+| `/profile` | Local profile (name, home city, avatar), travel stats, chapter-type bars |
 | `/trip/new` | Trip form (create) |
 | `/trip/[id]` | Trip detail (timeline) |
 | `/trip/[id]/edit` | Trip form (edit/delete) |
@@ -44,8 +49,10 @@ All times are epoch ms INTEGER.
 - `CoverImage` — trip cover photo or seeded gradient fallback, optional bottom scrim.
 - `TypeIcon` — round chapter-type icon (tinted or solid, check when done).
 - `Pill` / `LiveDot` — small status pill; pulsing live dot.
-- `TripCard` — trip list card (+ `useOpenTrip` for shared-element style navigation).
-- `HeroTripCard` — large home card with next chapter + countdown.
+- `TripCard` — compact trip row: thumb, title, place, dates, status (+ `useOpenTrip` for the transition).
+- `HeroTripCard` — home card: 168px cover + next chapter row with countdown.
+- `TabBar` — floating 4-tab bar with spring indicator; `useTabBarSpace()` for bottom padding/FAB offset.
+- `Avatar` — profile photo or initials gradient. `ProfileSheet` — edit profile bottom sheet.
 - `TripForm` — create/edit trip with cover picker, dates, notes.
 - `BottomSheet` — custom modal sheet (spring in, PanResponder drag-to-dismiss on handle).
 - `TypePicker` — horizontal chapter-type chips.
@@ -56,5 +63,5 @@ All times are epoch ms INTEGER.
 - `TripHeader` / `TripTopBar` — collapsing parallax cover header (grows from tapped card) + floating top bar.
 
 ## Stores (`src/store/`)
-`useTrips`, `useChapters` (byTrip), `useMemories` (byTrip). Helpers: `lib/timeline.ts` (groupByDay, findNext),
+`useTrips`, `useChapters` (byTrip), `useMemories` (byTrip, `loadAll`), `useProfile` (profile + chapter stats). Helpers: `lib/timeline.ts` (groupByDay, findNext),
 `lib/transition.ts` (card rect → detail header animation), `lib/useNow.ts`.

@@ -12,7 +12,8 @@ Install packages with `npx expo install <pkg>`. `.npmrc` sets `legacy-peer-deps=
 
 ## Folder structure
 ```
-src/app/          routes only (screens). _layout.tsx boots DB + stack
+src/app/          routes only (screens). _layout.tsx boots DB + stack; (tabs)/ = Home/Trips/Memories/Profile
+                  Tab screens pad bottom + offset FABs with useTabBarSpace()
 src/components/   shared UI (see docs/ARCHITECTURE.md for the list)
 src/db/           client.ts (open + migrations), trips.ts, chapters.ts, memories.ts (SQL only)
 src/store/        zustand stores; the only callers of src/db

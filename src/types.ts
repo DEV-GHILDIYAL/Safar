@@ -34,6 +34,13 @@ export interface Chapter {
 
 export type ChapterInput = Omit<Chapter, 'id' | 'createdAt' | 'sortOrder' | 'done'>;
 
+/** Single local profile row (no account). */
+export interface Profile {
+  name: string;
+  homeCity: string;
+  avatar: string | null; // filename inside the photos dir
+}
+
 export interface Memory {
   id: number;
   chapterId: number;

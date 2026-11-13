@@ -41,6 +41,15 @@ const MIGRATIONS: string[] = [
   CREATE INDEX idx_memories_chapter ON memories(chapter_id);
   CREATE INDEX idx_memories_trip ON memories(trip_id, taken_at);
   `,
+  `
+  CREATE TABLE profile (
+    id INTEGER PRIMARY KEY CHECK (id = 1),
+    name TEXT NOT NULL DEFAULT '',
+    home_city TEXT NOT NULL DEFAULT '',
+    avatar TEXT
+  );
+  INSERT INTO profile (id) VALUES (1);
+  `,
 ];
 
 let dbPromise: Promise<SQLite.SQLiteDatabase> | null = null;

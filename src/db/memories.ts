@@ -30,6 +30,12 @@ export async function listMemoriesByTrip(tripId: number): Promise<Memory[]> {
   return rows.map(mapMemory);
 }
 
+export async function listAllMemories(): Promise<Memory[]> {
+  const db = await getDb();
+  const rows = await db.getAllAsync<MemoryRow>('SELECT * FROM memories ORDER BY taken_at ASC, id ASC');
+  return rows.map(mapMemory);
+}
+
 export async function insertMemories(
   items: { chapterId: number; tripId: number; file: string; takenAt: number }[],
 ): Promise<Memory[]> {
