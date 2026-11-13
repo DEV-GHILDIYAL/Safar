@@ -1,0 +1,52 @@
+{
+  "expo": {
+    "name": "Safar",
+    "slug": "safar",
+    "scheme": "safar",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0A0C10",
+    "platforms": ["android"],
+    "android": {
+      "package": "com.devghildiyal.safar",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#0A0C10",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": ["android.permission.CAMERA"],
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      "expo-router",
+      ["expo-status-bar", { "style": "light" }],
+      "expo-sqlite",
+      "@react-native-community/datetimepicker",
+      "expo-image",
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Safar uses your photos to attach memories to your trips.",
+          "cameraPermission": "Safar uses the camera to capture memories on your trips."
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0A0C10",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 160,
+          "resizeMode": "contain"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": false
+    }
+  }
+}
