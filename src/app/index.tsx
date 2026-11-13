@@ -1,21 +1,103 @@
-import { StyleSheet, View } from 'react-native';
+import { router } from 'expo-router';
+import { useMemo } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
+import { FAB } from '@/components/FAB';
+import { HeroTripCard } from '@/components/HeroTripCard';
 import { Screen } from '@/components/Screen';
 import { Text } from '@/components/Text';
+import { TripCard } from '@/components/TripCard';
+import { formatDate, tripStatus } from '@/lib/dates';
+import { useNow } from '@/lib/useNow';
+import { useTrips } from '@/store/trips';
 import { colors, space } from '@/theme/tokens';
+import type { Trip } from '@/types';
+
+function greeting(now: number) {
+  const h = new Date(now).getHours();
+  if (h < 5) return 'Late night plans?';
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
 
 export default function Home() {
+  const trips = useTrips((s) => s.trips);
+  const now = useNow();
+
+  const { hero, upcoming, past } = useMemo(() => {
+    const current: Trip[] = [];
+    const up: Trip[] = [];
+    const done: Trip[] = [];
+    for (const t of trips) {
+      const s = tripStatus(t, now);
+      (s === 'current' ? current : s === 'upcoming' ? up : done).push(t);
+    }
+    const all = [...current, ...up];
+    return { hero: all[0], upcoming: all.slice(1), past: done.reverse() };
+  }, [trips, now]);
+
   return (
     <Screen>
-      <View style={styles.wrap}>
-        <Text variant="label" color={colors.accent}>
-          Safar
-        </Text>
-        <Text variant="display">Every trip is a story.</Text>
-      </View>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <Animated.View entering={FadeInDown.springify().damping(18)} style={styles.header}>
+          <Text variant="label" color={colors.accent}>
+            {formatDate(now)}
+          </Text>
+          <Text variant="display">{hero ? greeting(now) : 'Where to next?'}</Text>
+        </Animated.View>
+
+        {hero && <HeroTripCard trip={hero} now={now} />}
+
+        {upcoming.length > 0 && (
+          <View style={styles.section}>
+            <SectionTitle title="Upcoming" count={upcoming.length} />
+            {upcoming.map((t, i) => (
+              <TripCard key={t.id} trip={t} index={i} now={now} />
+            ))}
+          </View>
+        )}
+
+        {past.length > 0 && (
+          <View style={styles.section}>
+            <SectionTitle title="Past journeys" count={past.length} />
+            {past.map((t, i) => (
+              <TripCard key={t.id} trip={t} index={i + upcoming.length} now={now} />
+            ))}
+          </View>
+        )}
+
+        {trips.length === 0 && (
+          <Animated.View entering={FadeInDown.delay(150).springify()} style={styles.empty}>
+            <Text variant="title" align="center">
+              Your first story starts here
+            </Text>
+            <Text variant="body" color={colors.textDim} align="center">
+              Create a trip, then add chapters: trains, stays, food, everything.
+            </Text>
+          </Animated.View>
+        )}
+      </ScrollView>
+      <FAB label="New trip" onPress={() => router.push('/trip/new')} />
     </Screen>
   );
 }
 
+function SectionTitle({ title, count }: { title: string; count: number }) {
+  return (
+    <View style={styles.sectionTitle}>
+      <Text variant="heading">{title}</Text>
+      <Text variant="label" color={colors.textFaint}>
+        {count}
+      </Text>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
-  wrap: { padding: space.xl, gap: space.sm },
+  content: { padding: space.xl, paddingBottom: 140, gap: space.xxl },
+  header: { gap: space.xs, paddingTop: space.md },
+  section: { gap: space.lg },
+  sectionTitle: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm },
+  empty: { gap: space.md, paddingTop: space.xxxl, paddingHorizontal: space.lg },
 });
