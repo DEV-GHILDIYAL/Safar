@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
-import Animated, { ZoomIn } from 'react-native-reanimated';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import { haptics } from '@/lib/haptics';
 import { photoUri, pickPhotos, type PhotoSource } from '@/lib/photos';
 import { useMemories, useTripMemories } from '@/store/memories';
@@ -44,7 +44,7 @@ export function MemoryStrip({ chapter }: { chapter: Chapter }) {
         <AddTile icon="camera-outline" label="Capture" onPress={() => pick('camera')} />
         <AddTile icon="image-plus" label="Upload" onPress={() => pick('library')} />
         {items.map((m, i) => (
-          <Animated.View key={m.id} entering={ZoomIn.delay(Math.min(i, 8) * 40).springify().damping(14)}>
+          <Animated.View key={m.id} entering={FadeIn.delay(Math.min(i, 8) * 40).duration(250)}>
             <PressableScale
               haptic="tap"
               scaleTo={0.92}

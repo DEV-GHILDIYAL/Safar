@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { haptics } from '@/lib/haptics';
-import { colors, radius, space } from '@/theme/tokens';
+import { colors, motion, radius, space } from '@/theme/tokens';
 import { Icon, type IconName } from './Icon';
 import { PressableScale } from './PressableScale';
 import { Text } from './Text';
@@ -29,7 +29,7 @@ interface Props {
   onPress: (name: string) => void;
 }
 
-/** Floating pill tab bar with a springy active indicator. */
+/** Floating pill tab bar with a sliding active indicator. */
 export function TabBar({ index, routes, onPress }: Props) {
   const insets = useSafeAreaInsets();
   const [width, setWidth] = useState(0);
@@ -37,7 +37,7 @@ export function TabBar({ index, routes, onPress }: Props) {
   const x = useSharedValue(0);
 
   useEffect(() => {
-    x.value = withSpring(index * tabW, { damping: 18, stiffness: 200 });
+    x.value = withTiming(index * tabW, { duration: motion.fast, easing: Easing.out(Easing.cubic) });
   }, [index, tabW, x]);
 
   const indicator = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }] }));

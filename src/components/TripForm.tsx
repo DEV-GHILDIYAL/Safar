@@ -98,7 +98,7 @@ export function TripForm({ heading, initial, submitLabel, onSubmit, onDelete }: 
         <View style={{ width: 44 }} />
       </View>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <Animated.View entering={FadeInDown.springify().damping(18)}>
+        <Animated.View entering={FadeInDown.duration(320)}>
           <CoverImage uri={previewUri} file={previewFile} seed={initial?.id ?? 0} scrim={0.6} style={styles.cover}>
             <View style={styles.coverActions}>
               <Button compact variant="secondary" icon="image-outline" label="Gallery" onPress={() => pick('library')} />
@@ -108,7 +108,7 @@ export function TripForm({ heading, initial, submitLabel, onSubmit, onDelete }: 
           </CoverImage>
         </Animated.View>
         {fields.map((f, i) => (
-          <Animated.View key={i} entering={FadeInDown.delay(stagger(i + 1, 50)).springify().damping(18)}>
+          <Animated.View key={i} entering={FadeInDown.delay(stagger(i + 1, 50)).duration(320)}>
             {f}
           </Animated.View>
         ))}
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   },
   content: { padding: space.xl, gap: space.xl, paddingBottom: space.xxxl },
   cover: { height: 190, borderRadius: radius.lg, justifyContent: 'flex-end' },
-  coverActions: { flexDirection: 'row', gap: space.sm, padding: space.md, alignItems: 'center' },
+  coverActions: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, padding: space.md, alignItems: 'center' },
   dates: { flexDirection: 'row', gap: space.md },
   footer: { paddingHorizontal: space.xl, paddingTop: space.md, backgroundColor: colors.bg, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border },
 });

@@ -60,7 +60,7 @@ export default function Home() {
           if (c !== collapsed) setCollapsed(c);
         }}
       >
-        <Animated.View entering={FadeInDown.springify().damping(18)} style={styles.header}>
+        <Animated.View entering={FadeInDown.duration(320)} style={styles.header}>
           <Text variant="label" color={colors.accent}>
             {formatDate(now)}
           </Text>

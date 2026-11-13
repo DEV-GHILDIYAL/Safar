@@ -1,11 +1,11 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
-import Animated, { interpolate, useAnimatedStyle, useSharedValue, withSpring, type SharedValue } from 'react-native-reanimated';
+import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming, type SharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { daysBetween, formatRange, tripLength, tripStatus } from '@/lib/dates';
 import { takeOrigin } from '@/lib/transition';
-import { colors, space } from '@/theme/tokens';
+import { colors, motion, space } from '@/theme/tokens';
 import type { Trip } from '@/types';
 import { CoverImage } from './CoverImage';
 import { Icon, type IconName } from './Icon';
@@ -13,7 +13,7 @@ import { IconButton } from './IconButton';
 import { Pill } from './Pill';
 import { Text } from './Text';
 
-export const HEADER_H = 380;
+export const HEADER_H = 300;
 
 /** Collapsing cover header. Grows out of the tapped trip card (shared-element style) on entry. */
 export function TripHeader({ trip, scrollY, now }: { trip: Trip; scrollY: SharedValue<number>; now: number }) {
@@ -22,7 +22,7 @@ export function TripHeader({ trip, scrollY, now }: { trip: Trip; scrollY: Shared
   const p = useSharedValue(origin ? 0 : 1);
 
   useEffect(() => {
-    if (origin) p.value = withSpring(1, { damping: 22, stiffness: 170, mass: 0.9 });
+    if (origin) p.value = withTiming(1, { duration: motion.slow, easing: Easing.out(Easing.cubic) });
   }, [origin, p]);
 
   const frame = useAnimatedStyle(() => {

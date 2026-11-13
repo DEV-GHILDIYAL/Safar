@@ -1,5 +1,10 @@
 # Changelog
 
+## Phase 6.3
+- Fix: expanded chapter actions overflowed the card (edit button off-screen) → equal-width toolbar.
+- Responsive sweep: date fields drop the current year, long labels/refs truncate, cover buttons wrap.
+- Calmer motion: all springs/bounces replaced with short ease-out timing. Trip cover header 380→300px.
+
 ## v0.1.3
 - Release: bottom tabs (Home/Trips/Memories/Profile), offline profile, compact home cards, tab-switch crash fix.
 

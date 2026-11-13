@@ -18,7 +18,7 @@ src/components/   shared UI (see docs/ARCHITECTURE.md for the list)
 src/db/           client.ts (open + migrations), trips.ts, chapters.ts, memories.ts (SQL only)
 src/store/        zustand stores; the only callers of src/db
 src/lib/          pure helpers: dates, photos (file IO), haptics, transition
-src/theme/        tokens.ts (colors/space/radius/type/spring), chapterTypes.ts
+src/theme/        tokens.ts (colors/space/radius/type/motion), chapterTypes.ts
 src/types.ts      domain types (camelCase)
 docs/             ARCHITECTURE.md
 scripts/          gen-icons.mjs (regenerates assets/*.png icon + splash; node, no deps)
@@ -33,10 +33,10 @@ scripts/          gen-icons.mjs (regenerates assets/*.png icon + splash; node, n
 - Keep files < ~250 lines; split components when larger.
 
 ## Theme tokens
-- Never hardcode colours/spacing in screens: use `colors`, `space`, `radius`, `type`, `spring` from `@/theme/tokens`.
+- Never hardcode colours/spacing in screens: use `colors`, `space`, `radius`, `type`, `motion` from `@/theme/tokens`.
 - Text always via `<Text variant=...>` (display/title/heading/body/small/label).
 - Chapter colour/icon/label only from `CHAPTER_TYPES` in `@/theme/chapterTypes`; tints via `tint(hex, alpha)`.
-- One accent (`colors.accent`). Press feedback via `PressableScale` (spring + optional `haptic`).
+- One accent (`colors.accent`). Press feedback via `PressableScale`. Motion = timing + ease-out only, no springs/bounce.
 
 ## Data flow
 screen -> zustand store action -> `src/db/*` repo -> SQLite. Store updates its state from repo results;

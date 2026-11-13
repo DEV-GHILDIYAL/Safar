@@ -78,7 +78,7 @@ function DayHeader({ day, trip, now, index }: { day: number; trip: Trip; now: nu
   const inTrip = n >= 1 && n <= tripLength(trip);
   const today = daysBetween(now, day) === 0;
   return (
-    <Animated.View entering={FadeInDown.delay(stagger(index, 55) + 200).springify().damping(18)} layout={rowLayout} style={styles.dayRow}>
+    <Animated.View entering={FadeInDown.delay(stagger(index, 55) + 200).duration(320)} layout={rowLayout} style={styles.dayRow}>
       <View style={styles.rail}>
         <View style={[styles.dayDot, today && styles.dayDotToday]} />
       </View>

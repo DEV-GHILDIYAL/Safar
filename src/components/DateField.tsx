@@ -32,14 +32,16 @@ export function DateField({ label, value, mode = 'date', onChange, onClear, plac
       },
     });
   };
-  const display = value == null ? placeholder : mode === 'date' ? formatDate(value, true) : formatTime(value);
+  // Year only when it isn't this year: keeps two side-by-side fields readable on narrow phones.
+  const showYear = value != null && new Date(value).getFullYear() !== new Date().getFullYear();
+  const display = value == null ? placeholder : mode === 'date' ? formatDate(value, showYear) : formatTime(value);
   return (
     <View style={styles.wrap}>
       <Text variant="label" color={colors.textFaint}>
         {label}
       </Text>
       <PressableScale haptic="tap" scaleTo={0.97} onPress={open} style={styles.box}>
-        <Icon name={mode === 'date' ? 'calendar-blank-outline' : 'clock-outline'} size={20} color={colors.accent} />
+        <Icon name={mode === 'date' ? 'calendar-blank-outline' : 'clock-outline'} size={18} color={colors.accent} />
         <Text variant="body" color={value == null ? colors.textFaint : colors.text} style={styles.value} numberOfLines={1}>
           {display}
         </Text>
@@ -58,11 +60,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: space.sm,
     minHeight: 54,
-    paddingHorizontal: space.lg,
+    paddingHorizontal: space.md,
     borderRadius: radius.md,
     backgroundColor: colors.surfaceAlt,
     borderWidth: 1,
     borderColor: colors.border,
   },
-  value: { flex: 1, fontWeight: '700' },
+  value: { flex: 1, minWidth: 0, fontWeight: '700' },
 });

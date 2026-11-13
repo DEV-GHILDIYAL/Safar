@@ -45,6 +45,8 @@ Ideas: pinch-zoom in viewer, drag-to-reorder, share/export trip, home-screen wid
   `navigateToTab(routeKey)` and **no `navigation`**; `navigation.navigate` threw inside the press handler
   (error boundaries can't catch handler errors). Now uses `navigateToTab`. Found via `tsc`.
   (6.1 removed the tab fade animation on a wrong guess; kept removed.) Root + tabs export `ErrorBoundary`.
+- 6.3 (owner feedback): chapter action row overflowed on phone → equal-flex toolbar; no springs anywhere
+  (`motion` durations in tokens); trip cover 300px. Date fields omit the year when it's the current year.
 - Verified statically: `tsc --noEmit` clean, `expo export --platform android` bundles, expo-doctor 20/20.
 - Nothing has been compiled or run (by rule). Most likely spots to check first: expo-file-system
   `File.copy` signature, Reanimated `transformOrigin` on the timeline rail, `Modal navigationBarTranslucent`.

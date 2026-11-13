@@ -49,7 +49,7 @@ export function TripCard({ trip, index, now }: Props) {
   const status = statusText(trip, now);
   const past = tripStatus(trip, now) === 'past';
   return (
-    <Animated.View entering={FadeInDown.delay(stagger(index, 45) + 100).springify().damping(18)}>
+    <Animated.View entering={FadeInDown.delay(stagger(index, 45) + 100).duration(320)}>
       <PressableScale haptic="tap" onPress={open} scaleTo={0.97}>
         <View ref={ref} collapsable={false} style={styles.card}>
           <CoverImage file={trip.cover} seed={trip.id} style={[styles.thumb, past && styles.dim]} />

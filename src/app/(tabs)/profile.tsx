@@ -54,7 +54,7 @@ export default function ProfileTab() {
           Profile
         </Text>
 
-        <Animated.View entering={FadeInDown.springify().damping(18)}>
+        <Animated.View entering={FadeInDown.duration(320)}>
           <PressableScale haptic="tap" scaleTo={0.98} onPress={() => setEditing(true)} style={[styles.card, styles.me]}>
             <Avatar name={profile.name} file={profile.avatar} size={72} />
             <View style={styles.flex}>
@@ -72,7 +72,7 @@ export default function ProfileTab() {
           </PressableScale>
         </Animated.View>
 
-        <Animated.View entering={FadeInDown.delay(80).springify().damping(18)} style={styles.grid}>
+        <Animated.View entering={FadeInDown.delay(80).duration(320)} style={styles.grid}>
           <Stat icon="bag-suitcase-outline" value={trips.length} label="Trips" />
           <Stat icon="calendar-check-outline" value={tripStats.days} label="Days away" />
           <Stat icon="map-marker-multiple-outline" value={tripStats.places} label="Places" />
@@ -82,7 +82,7 @@ export default function ProfileTab() {
         </Animated.View>
 
         {byType.length > 0 && (
-          <Animated.View entering={FadeInDown.delay(160).springify().damping(18)} style={[styles.card, styles.gap]}>
+          <Animated.View entering={FadeInDown.delay(160).duration(320)} style={[styles.card, styles.gap]}>
             <Text variant="heading">How you travel</Text>
             {byType.map((x, i) => (
               <TypeBar key={x.type} type={x.type} n={x.n} pct={x.n / maxType} delay={250 + i * 70} />
@@ -90,7 +90,7 @@ export default function ProfileTab() {
           </Animated.View>
         )}
 
-        <Animated.View entering={FadeInDown.delay(240).springify().damping(18)} style={[styles.card, styles.gap]}>
+        <Animated.View entering={FadeInDown.delay(240).duration(320)} style={[styles.card, styles.gap]}>
           <InfoRow icon="shield-lock-outline" title="Private by design" body="No account, no cloud. Trips and photos stay on this phone." />
           <InfoRow icon="information-outline" title={`Safar ${Constants.expoConfig?.version ?? ''}`} body="Updates install from GitHub Releases over this version." />
         </Animated.View>

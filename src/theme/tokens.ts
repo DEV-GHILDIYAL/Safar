@@ -32,10 +32,7 @@ export const type = {
   label: { fontSize: 11, lineHeight: 14, fontWeight: '800', letterSpacing: 1.2, textTransform: 'uppercase' },
 } satisfies Record<string, TextStyle>;
 
-export const spring = {
-  press: { damping: 15, stiffness: 320, mass: 0.6 },
-  gentle: { damping: 18, stiffness: 160, mass: 1 },
-  bouncy: { damping: 12, stiffness: 180, mass: 0.9 },
-} as const;
+/** Animation durations (ms). Motion is timing-based with ease-out curves: no springs or bounce. */
+export const motion = { press: 110, release: 170, fast: 220, base: 300, slow: 380 } as const;
 
 export const stagger = (index: number, base = 60) => Math.min(index, 10) * base;

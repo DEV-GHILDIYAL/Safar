@@ -51,7 +51,7 @@ export default function TripDetail() {
         <TripHeader trip={trip} scrollY={scrollY} now={now} />
         <Stats days={tripLength(trip)} chapters={chapters.length} done={done} photos={memoryCount} />
         {trip.notes ? (
-          <Animated.View entering={FadeInDown.delay(260).springify().damping(18)} style={styles.notes}>
+          <Animated.View entering={FadeInDown.delay(260).duration(320)} style={styles.notes}>
             <Icon name="text" size={18} color={colors.textFaint} />
             <Text variant="small" color={colors.textDim} style={styles.flex}>
               {trip.notes}
@@ -100,7 +100,7 @@ function Stats({ days, chapters, done, photos }: { days: number; chapters: numbe
   }, [pct, w]);
   const bar = useAnimatedStyle(() => ({ width: `${w.value * 100}%` }));
   return (
-    <Animated.View entering={FadeInDown.delay(180).springify().damping(18)} style={styles.stats}>
+    <Animated.View entering={FadeInDown.delay(180).duration(320)} style={styles.stats}>
       <View style={styles.statRow}>
         <Stat value={days} label={days === 1 ? 'day' : 'days'} />
         <Stat value={chapters} label={chapters === 1 ? 'chapter' : 'chapters'} />

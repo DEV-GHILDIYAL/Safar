@@ -35,7 +35,7 @@ export function HeroTripCard({ trip, now }: Props) {
   const pill = status === 'current' ? `Day ${day} of ${tripLength(trip)}` : `Starts in ${countdown(trip.startDate, now)}`;
 
   return (
-    <Animated.View entering={FadeInDown.delay(60).springify().damping(18)}>
+    <Animated.View entering={FadeInDown.delay(60).duration(320)}>
       <PressableScale haptic="tap" onPress={open} scaleTo={0.98}>
         <View ref={ref} collapsable={false} style={styles.card}>
           <CoverImage file={trip.cover} seed={trip.id} scrim={1.1} style={styles.cover}>

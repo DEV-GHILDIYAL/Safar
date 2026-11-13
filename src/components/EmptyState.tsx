@@ -24,7 +24,7 @@ export function EmptyState({ icon, title, body, action, delay = 150 }: Props) {
   const ring = useAnimatedStyle(() => ({ transform: [{ scale: 1 + 0.06 * bob.value }], opacity: 0.5 + 0.5 * (1 - bob.value) }));
 
   return (
-    <Animated.View entering={FadeInDown.delay(delay).springify().damping(18)} style={styles.wrap}>
+    <Animated.View entering={FadeInDown.delay(delay).duration(320)} style={styles.wrap}>
       <View style={styles.art}>
         <Animated.View style={[styles.ringOuter, ring]} />
         <View style={styles.ringInner} />

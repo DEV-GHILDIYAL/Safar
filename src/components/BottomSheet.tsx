@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { KeyboardAvoidingView, Modal, PanResponder, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
-import Animated, { interpolate, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors, radius, space, spring } from '@/theme/tokens';
+import { colors, motion, radius, space } from '@/theme/tokens';
 
 interface Props {
   visible: boolean;
@@ -10,7 +10,7 @@ interface Props {
   children: ReactNode;
 }
 
-/** Custom modal bottom sheet: spring in, drag the handle down (or tap backdrop) to dismiss. */
+/** Custom modal bottom sheet: eases in, drag the handle down (or tap backdrop) to dismiss. */
 export function BottomSheet({ visible, onClose, children }: Props) {
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -23,7 +23,7 @@ export function BottomSheet({ visible, onClose, children }: Props) {
     if (visible) {
       setMounted(true);
       y.value = height;
-      y.value = withSpring(0, spring.gentle);
+      y.value = withTiming(0, { duration: motion.base, easing: Easing.out(Easing.cubic) });
       return;
     }
     if (!mounted) return;
@@ -41,7 +41,7 @@ export function BottomSheet({ visible, onClose, children }: Props) {
       },
       onPanResponderRelease: (_, g) => {
         if (g.dy > 120 || g.vy > 1.1) closeRef.current();
-        else y.value = withSpring(0, spring.gentle);
+        else y.value = withTiming(0, { duration: motion.base, easing: Easing.out(Easing.cubic) });
       },
     }),
   ).current;

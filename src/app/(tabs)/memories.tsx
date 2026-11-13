@@ -54,7 +54,7 @@ export default function MemoriesTab() {
         </View>
 
         {sections.map(({ trip, items }, si) => (
-          <Animated.View key={trip.id} entering={FadeInDown.delay(Math.min(si, 6) * 70).springify().damping(18)} style={styles.section}>
+          <Animated.View key={trip.id} entering={FadeInDown.delay(Math.min(si, 6) * 70).duration(320)} style={styles.section}>
             <PressableScale haptic="tap" scaleTo={0.98} onPress={() => router.push(`/trip/${trip.id}/memories`)} style={styles.sectionHead}>
               <View style={styles.flex}>
                 <Text variant="heading" numberOfLines={1}>

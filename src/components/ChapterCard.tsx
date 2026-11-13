@@ -1,20 +1,19 @@
 import type { ReactNode } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
-import Animated, { FadeIn, FadeInDown, FadeOut, LinearTransition, ZoomIn } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInDown, FadeOut, LinearTransition } from 'react-native-reanimated';
 import { daysBetween, formatDuration, formatTime } from '@/lib/dates';
-import { haptics } from '@/lib/haptics';
+import { haptics, type HapticKind } from '@/lib/haptics';
 import { useChapters } from '@/store/chapters';
 import { CHAPTER_TYPES, tint } from '@/theme/chapterTypes';
 import { colors, radius, space, stagger } from '@/theme/tokens';
 import type { Chapter } from '@/types';
 import { Icon, type IconName } from './Icon';
-import { IconButton } from './IconButton';
 import { PressableScale } from './PressableScale';
 import { Text } from './Text';
 import { TypeIcon } from './TypeIcon';
 
 export const RAIL = 56;
-export const rowLayout = LinearTransition.springify().damping(20).stiffness(180);
+export const rowLayout = LinearTransition.duration(220);
 
 interface Props {
   chapter: Chapter;
@@ -47,9 +46,9 @@ export function ChapterCard({ chapter: c, index, expanded, canUp, canDown, onTog
   };
 
   return (
-    <Animated.View entering={FadeInDown.delay(stagger(index, 55) + 260).springify().damping(18)} layout={rowLayout} style={styles.row}>
+    <Animated.View entering={FadeInDown.delay(stagger(index, 55) + 260).duration(320)} layout={rowLayout} style={styles.row}>
       <View style={styles.rail}>
-        <Animated.View key={String(c.done)} entering={ZoomIn.springify().damping(12)}>
+        <Animated.View key={String(c.done)} entering={FadeIn.duration(200)}>
           <TypeIcon type={c.type} size={40} solid done={c.done} />
         </Animated.View>
       </View>
@@ -61,7 +60,7 @@ export function ChapterCard({ chapter: c, index, expanded, canUp, canDown, onTog
         style={[styles.card, { borderColor: expanded ? tint(m.color, 0.55) : colors.border }, c.done && !expanded && styles.doneCard]}
       >
         <View style={styles.top}>
-          <Text variant="label" color={m.color}>
+          <Text variant="label" color={m.color} numberOfLines={1} style={styles.shrink}>
             {m.label} · {time}
           </Text>
           {c.bookingRef && !expanded ? <Icon name="ticket-confirmation-outline" size={16} color={colors.textFaint} /> : null}
@@ -91,27 +90,53 @@ export function ChapterCard({ chapter: c, index, expanded, canUp, canDown, onTog
               </Text>
             ) : null}
             {children}
+            {/* Equal-width toolbar: always fits the card, whatever the screen width. */}
             <View style={styles.actions}>
-              <PressableScale
+              <Action
+                icon={c.done ? 'check-circle' : 'checkbox-blank-circle-outline'}
+                label={c.done ? 'Done' : 'Mark done'}
+                color={c.done ? colors.success : colors.text}
+                active={c.done}
                 haptic="success"
                 onPress={() => toggleDone(c)}
-                style={[styles.doneBtn, { backgroundColor: c.done ? tint(colors.success, 0.16) : colors.surfaceAlt }]}
-              >
-                <Icon name={c.done ? 'check-circle' : 'checkbox-blank-circle-outline'} size={20} color={c.done ? colors.success : colors.textDim} />
-                <Text variant="small" color={c.done ? colors.success : colors.text} style={styles.bold}>
-                  {c.done ? 'Done' : 'Mark done'}
-                </Text>
-              </PressableScale>
-              <View style={styles.spacer} />
-              <IconButton icon="arrow-up" size={38} disabled={!canUp} haptic="select" onPress={() => move(c, -1)} />
-              <IconButton icon="arrow-down" size={38} disabled={!canDown} haptic="select" onPress={() => move(c, 1)} />
-              <IconButton icon="pencil-outline" size={38} onPress={onEdit} />
-              <IconButton icon="trash-can-outline" size={38} color={colors.danger} background={colors.dangerSoft} onPress={confirmDelete} />
+              />
+              <Action icon="arrow-up" label="Up" disabled={!canUp} onPress={() => move(c, -1)} />
+              <Action icon="arrow-down" label="Down" disabled={!canDown} onPress={() => move(c, 1)} />
+              <Action icon="pencil-outline" label="Edit" onPress={onEdit} />
+              <Action icon="trash-can-outline" label="Delete" color={colors.danger} onPress={confirmDelete} />
             </View>
           </Animated.View>
         )}
       </PressableScale>
     </Animated.View>
+  );
+}
+
+interface ActionProps {
+  icon: IconName;
+  label: string;
+  onPress: () => void;
+  color?: string;
+  disabled?: boolean;
+  active?: boolean;
+  haptic?: HapticKind;
+}
+
+function Action({ icon, label, onPress, color = colors.text, disabled, active, haptic = 'select' }: ActionProps) {
+  return (
+    <PressableScale
+      haptic={disabled ? undefined : haptic}
+      disabled={disabled}
+      onPress={onPress}
+      scaleTo={0.94}
+      accessibilityLabel={label}
+      style={[styles.action, active && { backgroundColor: tint(colors.success, 0.16) }, disabled && styles.disabled]}
+    >
+      <Icon name={icon} size={20} color={color} />
+      <Text variant="label" color={active ? colors.success : colors.textFaint} numberOfLines={1} style={styles.actionLabel}>
+        {label}
+      </Text>
+    </PressableScale>
   );
 }
 
@@ -147,16 +172,16 @@ const styles = StyleSheet.create({
   shrink: { flexShrink: 1 },
   details: { gap: space.md, marginTop: space.sm },
   info: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  mono: { fontFamily: 'monospace', fontWeight: '700', letterSpacing: 0.5 },
-  actions: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.xs },
-  doneBtn: {
+  mono: { flexShrink: 1, fontFamily: 'monospace', fontWeight: '700', letterSpacing: 0.5 },
+  actions: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.xs + 2,
-    paddingHorizontal: space.md,
-    height: 38,
-    borderRadius: radius.pill,
+    gap: space.xs,
+    marginTop: space.xs,
+    padding: space.xs,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceAlt,
   },
-  bold: { fontWeight: '800' },
-  spacer: { flex: 1 },
+  action: { flex: 1, minWidth: 0, alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: space.sm, borderRadius: radius.sm },
+  actionLabel: { fontSize: 9, letterSpacing: 0.4 },
+  disabled: { opacity: 0.3 },
 });

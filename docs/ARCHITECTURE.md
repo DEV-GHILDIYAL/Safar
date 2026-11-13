@@ -37,7 +37,7 @@ All times are epoch ms INTEGER.
 ## Shared components (`src/components/`)
 - `Text` — themed text with `variant` (display/title/heading/body/small/label).
 - `Icon` — MaterialCommunityIcons wrapper; exports `IconName`.
-- `PressableScale` — Pressable with spring scale + optional haptic.
+- `PressableScale` — Pressable with subtle timed scale + optional haptic.
 - `Button` — primary/secondary/ghost/danger, icon, loading, compact.
 - `IconButton` — round icon button.
 - `FAB` — floating accent action button; label collapses (animated) via `collapsed`.
@@ -51,14 +51,14 @@ All times are epoch ms INTEGER.
 - `Pill` / `LiveDot` — small status pill; pulsing live dot.
 - `TripCard` — compact trip row: thumb, title, place, dates, status (+ `useOpenTrip` for the transition).
 - `HeroTripCard` — home card: 168px cover + next chapter row with countdown.
-- `TabBar` — floating 4-tab bar with spring indicator; `useTabBarSpace()` for bottom padding/FAB offset.
+- `TabBar` — floating 4-tab bar with sliding indicator; `useTabBarSpace()` for bottom padding/FAB offset.
 - `ErrorView` — exported as `ErrorBoundary` from root and `(tabs)` layouts; message + retry.
 - `Avatar` — profile photo or initials gradient. `ProfileSheet` — edit profile bottom sheet.
 - `TripForm` — create/edit trip with cover picker, dates, notes.
-- `BottomSheet` — custom modal sheet (spring in, PanResponder drag-to-dismiss on handle).
+- `BottomSheet` — custom modal sheet (eases in, PanResponder drag-to-dismiss on handle).
 - `TypePicker` — horizontal chapter-type chips.
 - `ChapterSheet` / `useChapterSheet` — add/edit chapter form in a bottom sheet.
-- `ChapterCard` — timeline row: type node + card that expands in place (done, reorder, edit, delete).
+- `ChapterCard` — timeline row: type node + card that expands in place; equal-width toolbar (done, up, down, edit, delete).
 - `Timeline` — day groups, animated drawing rail, live "now" marker.
 - `MemoryStrip` — chapter photo strip with Capture (camera) / Upload (gallery, multi) tiles.
 - `TripHeader` / `TripTopBar` — collapsing parallax cover header (grows from tapped card) + floating top bar.

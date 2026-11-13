@@ -1,9 +1,10 @@
 import { Pressable, type PressableProps, type StyleProp, type ViewStyle } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { haptics, type HapticKind } from '@/lib/haptics';
-import { spring } from '@/theme/tokens';
+import { motion } from '@/theme/tokens';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+const EASE = Easing.out(Easing.quad);
 
 export interface PressableScaleProps extends Omit<PressableProps, 'style'> {
   style?: StyleProp<ViewStyle>;
@@ -11,8 +12,8 @@ export interface PressableScaleProps extends Omit<PressableProps, 'style'> {
   haptic?: HapticKind;
 }
 
-/** Pressable with spring scale feedback and optional haptic on press. */
-export function PressableScale({ scaleTo = 0.96, haptic, onPress, onPressIn, onPressOut, onLongPress, style, children, ...rest }: PressableScaleProps) {
+/** Pressable with a subtle scale-down on press (no bounce) and optional haptic. */
+export function PressableScale({ scaleTo = 0.97, haptic, onPress, onPressIn, onPressOut, onLongPress, style, children, ...rest }: PressableScaleProps) {
   const scale = useSharedValue(1);
   const animated = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
 
@@ -20,11 +21,11 @@ export function PressableScale({ scaleTo = 0.96, haptic, onPress, onPressIn, onP
     <AnimatedPressable
       {...rest}
       onPressIn={(e) => {
-        scale.value = withSpring(scaleTo, spring.press);
+        scale.value = withTiming(scaleTo, { duration: motion.press, easing: EASE });
         onPressIn?.(e);
       }}
       onPressOut={(e) => {
-        scale.value = withSpring(1, spring.press);
+        scale.value = withTiming(1, { duration: motion.release, easing: EASE });
         onPressOut?.(e);
       }}
       onPress={(e) => {
