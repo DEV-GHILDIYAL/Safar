@@ -1,5 +1,8 @@
 # Changelog
 
+## Phase 6.1
+- Fix: app closing when switching tabs (removed tab scene fade). Error screens with retry instead of crashes.
+
 ## Phase 6
 - Bottom navigation with 4 tabs: Home, Trips (search + filters), Memories (all photos), Profile (offline).
 - Compact home hero and trip row cards for faster scanning.

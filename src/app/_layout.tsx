@@ -10,6 +10,8 @@ import { colors } from '@/theme/tokens';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
+export { ErrorView as ErrorBoundary } from '@/components/ErrorView';
+
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
 

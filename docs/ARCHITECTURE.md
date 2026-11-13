@@ -52,6 +52,7 @@ All times are epoch ms INTEGER.
 - `TripCard` — compact trip row: thumb, title, place, dates, status (+ `useOpenTrip` for the transition).
 - `HeroTripCard` — home card: 168px cover + next chapter row with countdown.
 - `TabBar` — floating 4-tab bar with spring indicator; `useTabBarSpace()` for bottom padding/FAB offset.
+- `ErrorView` — exported as `ErrorBoundary` from root and `(tabs)` layouts; message + retry.
 - `Avatar` — profile photo or initials gradient. `ProfileSheet` — edit profile bottom sheet.
 - `TripForm` — create/edit trip with cover picker, dates, notes.
 - `BottomSheet` — custom modal sheet (spring in, PanResponder drag-to-dismiss on handle).
